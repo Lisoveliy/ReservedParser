@@ -24,6 +24,8 @@ namespace ReservedParser.Models
                     while (count < products.Count)
                     {
                         var x = products[count++];
+                        x.price = Convert.ToString(Convert.ToDouble(x.price) * config.PriceDef.PLNtoRUB + config.PriceDef.Comission + config.PriceDef.Delivery);
+                        x.final_price = Convert.ToString(Convert.ToDouble(x.final_price) * config.PriceDef.PLNtoRUB + config.PriceDef.Comission + config.PriceDef.Delivery);
                         await TranslateProduct(x, translatorThread[i/2]);
                     }
                 }));
@@ -44,13 +46,13 @@ namespace ReservedParser.Models
             {
                 x.name = (await translator.TranslateAsync("pl", "ru", x.name)).TranslatedText;
                 x.photoDescription = (await translator.TranslateAsync("pl", "ru", x.photoDescription)).TranslatedText;
-                x.price = Convert.ToString(Convert.ToDouble(x.price) * 6.0);
+
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 try
                 {
-                    Console.WriteLine("Error ocuped while trying translate text. Retrying...");
+                    Console.WriteLine("Error ocuped while trying translate text. Retrying...\nInner Exception: {0}", e.Message);
                     await TranslateProduct(x, translator);
                 }
                 catch (StackOverflowException)

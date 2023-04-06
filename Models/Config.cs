@@ -15,10 +15,17 @@ namespace ReservedParser.Models
         public string MongoDB { get; set; } = "";
         public string MongoCollection { get; set; } = "";
         public int TranslateThreads { get; set; }
+        public Price PriceDef { get; set; } = null!;
         public static Config InitConfig(string path)
         {
             FileStream file = File.OpenRead(path);
             return JsonSerializer.Deserialize<Config>(new StreamReader(file).ReadToEnd())!;
         }
+    }
+    internal class Price
+    {
+        public float Comission { get; set; }
+        public float Delivery { get; set; }
+        public float PLNtoRUB { get; set; }
     }
 }
