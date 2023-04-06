@@ -1,0 +1,7 @@
+{
+  "Host": "https://www.reserved.com/pl/pl/",
+  "MongoString": "mongodb://localhost:27017",
+  "MongoDB": "reserved",
+  "MongoCollection": "products",
+  "TranslateThreads": 16
+}
