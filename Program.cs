@@ -1,5 +1,4 @@
 ﻿using ReservedParser.Models;
-using System.Text.Json;
 using GTranslatorAPI;
 
 namespace ReservedParser

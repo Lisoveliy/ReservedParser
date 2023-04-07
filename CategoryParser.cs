@@ -1,10 +1,5 @@
 ﻿using ReservedParser.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ReservedParser
 {
@@ -82,7 +77,7 @@ namespace ReservedParser
                     for(int k = 0; k < subcategory.children!.Count; k++)
                     {
                         /*DEBUG*/
-                        //if (list.Count > 10)
+                        //if (list.Count >= 10)
                         //{
                         //    break;
                         //}

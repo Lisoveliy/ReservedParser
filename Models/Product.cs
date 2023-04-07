@@ -26,7 +26,7 @@ namespace ReservedParser.Models
         public string price { get; set; } = string.Empty;
         public string final_price { get; set; } = string.Empty;
         public string brand { get; set; } = string.Empty;
-        public string photoDescription { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
         public string url { get; set; } = string.Empty;
         public Size[] sizes { get; set; } = new Size[] { };
     }
