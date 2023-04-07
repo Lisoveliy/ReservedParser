@@ -3,10 +3,5 @@
   "MongoString": "mongodb://localhost:27017",
   "MongoDB": "reserved",
   "MongoCollection": "products",
-  "TranslateThreads": 4,
-  "PriceDef": {
-    "Comission": 1000,
-    "Delivery": 5000,
-    "PLNtoRUB": 17.89
-  }
+  "TranslateThreads": 4
 }

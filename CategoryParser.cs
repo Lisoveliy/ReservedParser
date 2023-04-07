@@ -61,7 +61,10 @@ namespace ReservedParser
                         products.Add(x);
                     }
                 });
-                Console.WriteLine($"{i + 1}/{dicategories.Count} Category {category.Name} Downloaded! [{category.Category}]");
+                var realcolor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{i + 1}/{dicategories.Count} Category {category.Name} downloaded! [{category.Category}]");
+                Console.ForegroundColor = ConsoleColor.White;
             }
             return products;
         }
@@ -77,7 +80,7 @@ namespace ReservedParser
                     for(int k = 0; k < subcategory.children!.Count; k++)
                     {
                         /*DEBUG*/
-                        //if (list.Count >= 10)
+                        //if (list.Count >= 2)
                         //{
                         //    break;
                         //}

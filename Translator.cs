@@ -7,8 +7,14 @@ namespace ReservedParser.Models
 {
     internal class Translator
     {
+        private static int errors = 0;
+        private static int warns = 0;
         public static void TranslateProducts(List<Product> products, Config config)
         {
+            var ta = System.DateTime.Now;
+            Console.Clear();
+            errors = 0;
+            warns = 0;
             var translatorThread = new List<GTranslatorAPIClient>();
             var Tasks = new List<Task>();
             int count = 0;
@@ -20,11 +26,9 @@ namespace ReservedParser.Models
                     while (count < products.Count)
                     {
                         var x = products[count++];
-                        x.price = Convert.ToString(Convert.ToDouble(x.price) * config.PriceDef.PLNtoRUB + config.PriceDef.Comission + config.PriceDef.Delivery);
-                        x.final_price = Convert.ToString(Convert.ToDouble(x.final_price) * config.PriceDef.PLNtoRUB + config.PriceDef.Comission + config.PriceDef.Delivery);
-                        Console.WriteLine("Parsing {0}...", x.url);
+                        Console.WriteLine("Parsing {0}", x.url);
                         x.description = ParseDescription(x.url).Result;
-                        x.description = Regex.Replace(x.description, "<.*?>", " ");
+                        x.description = Regex.Replace(x.description, "<.*?>", "");
                         x.description = x.description.Replace("&nbsp;", "");
                         await TranslateProduct(x, translatorThread[i/2]);
                         Thread.Sleep(100);
@@ -33,10 +37,29 @@ namespace ReservedParser.Models
             }
             var taskConsole = Task.Run(() =>
             {
+                Console.WriteLine();
                 while (count < products.Count)
                 {
-                    Console.WriteLine($"Translating {count}/{products.Count}... Please wait.");
-                    Thread.Sleep(1000);
+
+                    var curpos = Console.GetCursorPosition();
+                    if (curpos.Top > Console.WindowHeight - 2)
+                    {
+                        Console.Clear();
+                        curpos.Top = 1;
+                        curpos.Left = 0;
+                    }
+                    Console.SetCursorPosition(0, 0);
+                    var timeelapsed = System.DateTime.Now - ta;
+                    string hours = timeelapsed.Hours.ToString().Length < 2 ? "0" + timeelapsed.Hours.ToString() : timeelapsed.Hours.ToString();
+                    string minutes = timeelapsed.Minutes.ToString().Length < 2 ? "0" + timeelapsed.Minutes.ToString() : timeelapsed.Minutes.ToString();
+                    string seconds = timeelapsed.Seconds.ToString().Length < 2 ? "0" + timeelapsed.Seconds.ToString() : timeelapsed.Seconds.ToString();
+                    Console.Write($"Translating {count}/{products.Count}... Please wait. TA: {hours}:{minutes}:{seconds} ");
+                    var realcolor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Errors: {0}, Warnings: {1}", errors, warns);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.SetCursorPosition(0, curpos.Top);
+                    Thread.Sleep(500);
                 }
             });
             Tasks.ForEach(x =>
@@ -44,6 +67,8 @@ namespace ReservedParser.Models
                 x.Wait();
             });
             taskConsole.Wait();
+            Console.WriteLine("Errors {0}", errors);
+            Console.WriteLine("Warnings {0}", warns);
         }
         static async Task TranslateProduct(Product x, GTranslatorAPIClient translator)
         {
@@ -77,7 +102,6 @@ namespace ReservedParser.Models
                 //if(x.description != "")
                 //Console.WriteLine(x.description);
                 //x.description = (await translator.TranslateAsync("pl", "ru", x.description)).TranslatedText;
-
             }
             catch (Exception e)
             {
@@ -87,12 +111,20 @@ namespace ReservedParser.Models
                 }
                 try
                 {
-                    Console.WriteLine("Error ocurred while trying translate text. Retrying...{0}", e.ToString());
+                    var realcolor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Error ocurred while trying translate text. Retrying...{0}", e);
+                    warns++;
+                Console.ForegroundColor = ConsoleColor.White;
                     await TranslateProduct(x, translator);
                 }
                 catch (StackOverflowException)
                 {
+                    var realcolor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Too many failed attempts. Aborting translation...");
+                    errors++;
+                    Console.ForegroundColor = ConsoleColor.White;
                     return;
                 }
             }
@@ -113,7 +145,11 @@ namespace ReservedParser.Models
                 return des!;
             }catch(Exception)
             {
+                var realcolor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Ignoring {url} description. Invalid parse data");
+                errors++;
+                Console.ForegroundColor = realcolor;
                 return "";
             }
         }

@@ -15,7 +15,7 @@ namespace ReservedParser.Models
         public string MongoDB { get; set; } = "";
         public string MongoCollection { get; set; } = "";
         public int TranslateThreads { get; set; }
-        public Price PriceDef { get; set; } = null!;
+        public string? Code { get; set; }
         public static Config InitConfig(string path)
         {
             FileStream file = File.OpenRead(path);
