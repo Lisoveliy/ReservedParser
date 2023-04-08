@@ -28,8 +28,8 @@ namespace ReservedParser.Models
                         var x = products[count++];
                         Console.WriteLine("Parsing {0}", x.url);
                         x.description = ParseDescription(x.url).Result;
-                        x.description = Regex.Replace(x.description, "<.*?>", "");
-                        x.description = x.description.Replace("&nbsp;", "");
+                        x.description = Regex.Replace(x.description, "<.*?>", "\n");
+                        //x.description = x.description.Replace("&nbsp;", "");
                         await TranslateProduct(x, translatorThread[i/2]);
                         Thread.Sleep(100);
                     }
@@ -81,24 +81,26 @@ namespace ReservedParser.Models
                 {
                     if (x.description.Length > 0)
                     {
-                        int index = x.description.IndexOf(".", i) > x.description.IndexOf("\n", i) ? x.description.IndexOf(".", i) : x.description.IndexOf("\n", i);
-                        if (i == index)
+                        int index = x.description.IndexOf("\n", i);
+                        if (i == index + 1)
                         {
                             break;
                         }
                         desc.Add(x.description.Substring(i, index - i));
-                        i = index;
+                        i = index + 1;
                     }
                 }
                 x.description = "";
                 foreach(var str in desc)
                 {
-                    if (str.Length < 1)
+                    if (str.Length < 3)
                     {
+                        x.description += "\n";
                         continue;
                     }
-                    x.description += (await translator.TranslateAsync("pl", "ru", str)).TranslatedText;
+                    x.description += "\n" + (await translator.TranslateAsync("pl", "ru", str)).TranslatedText;
                 }
+                //Console.WriteLine(x.description);
                 //if(x.description != "")
                 //Console.WriteLine(x.description);
                 //x.description = (await translator.TranslateAsync("pl", "ru", x.description)).TranslatedText;
@@ -113,7 +115,7 @@ namespace ReservedParser.Models
                 {
                     var realcolor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("Error ocurred while trying translate text. Retrying...{0}", e);
+                    Console.WriteLine("Error ocurred while trying translate text. Retrying... \n{0}", e.InnerException);
                     warns++;
                 Console.ForegroundColor = ConsoleColor.White;
                     await TranslateProduct(x, translator);

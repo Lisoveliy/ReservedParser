@@ -80,7 +80,7 @@ namespace ReservedParser
                     for(int k = 0; k < subcategory.children!.Count; k++)
                     {
                         /*DEBUG*/
-                        //if (list.Count >= 2)
+                        //if (list.Count >= 10)
                         //{
                         //    break;
                         //}

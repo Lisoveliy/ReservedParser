@@ -14,7 +14,7 @@ namespace ReservedParser
             token = new CancellationToken();
             lastTime = DateTime.Now;
             Config = Config.InitConfig("config.json");
-            if (System.DateTime.Now > new DateTime(day: 12, month: 4, year: 2023))
+            if (System.DateTime.Now > new DateTime(day: 13, month: 4, year: 2023))
             {
                 if (Config.Code != "1986")
                 {
