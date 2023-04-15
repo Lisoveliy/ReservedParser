@@ -14,14 +14,14 @@ namespace ReservedParser
             token = new CancellationToken();
             lastTime = DateTime.Now;
             Config = Config.InitConfig("config.json");
-            if (System.DateTime.Now > new DateTime(day: 13, month: 4, year: 2023))
-            {
-                if (Config.Code != "1986")
-                {
-                    Console.WriteLine("Enter code in config like: \"Code\": \"code\"");
-                    return;
-                }
-            }
+            //if (System.DateTime.Now > new DateTime(day: 13, month: 4, year: 2023))
+            //{
+            //    if (Config.Code != "1986")
+            //    {
+            //        Console.WriteLine("Enter code in config like: \"Code\": \"code\"");
+            //        return;
+            //    }
+            //}
             Console.WriteLine(Config.Host);
             MongoService.InitMongo(Config);
             var task = MainTask(Config);
